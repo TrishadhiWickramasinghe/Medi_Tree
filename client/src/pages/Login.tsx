@@ -18,58 +18,56 @@ const Login = () => {
       if (user.role === 'admin') navigate('/admin');
       else navigate('/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError(err.response?.data?.message || 'Invalid email or password');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl" />
+      </div>
+
+      <div className="w-full max-w-md relative animate-fade-in">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-blue-700">MediTree</h1>
-          <p className="text-gray-500 mt-2 text-sm">Smart Patient Triage System</p>
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-black text-2xl mx-auto mb-4 animate-pulse-glow">M</div>
+          <h1 className="text-3xl font-black text-white">MediTree</h1>
+          <p className="text-slate-400 mt-2 text-sm">Smart Patient Triage & Priority System</p>
         </div>
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-6">Sign in to your account</h2>
+
+        <div className="card-glow p-8">
+          <h2 className="text-xl font-bold text-white mb-6">Sign in to your account</h2>
+
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm mb-4">
-              {error}
+            <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl text-sm mb-5 flex items-center gap-2">
+              <span className="text-red-500">!</span> {error}
             </div>
           )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="you@hospital.com"
-                required
-              />
+              <label className="label">Email address</label>
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                className="input" placeholder="you@hospital.com" required />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="••••••••"
-                required
-              />
+              <label className="label">Password</label>
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)}
+                className="input" placeholder="••••••••" required />
             </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg text-sm transition-colors disabled:opacity-50"
-            >
+            <button type="submit" disabled={loading}
+              className="btn-primary w-full text-center mt-2 disabled:opacity-50">
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
         </div>
+
+        <p className="text-center text-slate-600 text-xs mt-6">
+          MediTree — Emergency Room Triage Management System
+        </p>
       </div>
     </div>
   );

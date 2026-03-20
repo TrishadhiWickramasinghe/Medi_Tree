@@ -9,34 +9,37 @@ const Reports = () => {
   }, []);
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-8 space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Reports</h1>
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b border-gray-200">
-            <tr>
-              <th className="text-left px-4 py-3 text-gray-600 font-medium">Date</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-medium">Total Patients</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-medium">Treated</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-medium">Avg Wait (min)</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-medium">Avg Treatment (min)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {reports.length === 0 && (
-              <tr><td colSpan={5} className="text-center py-10 text-gray-400">No reports yet</td></tr>
-            )}
-            {reports.map(r => (
-              <tr key={r._id} className="border-b border-gray-100 hover:bg-gray-50">
-                <td className="px-4 py-3">{new Date(r.date).toLocaleDateString()}</td>
-                <td className="px-4 py-3">{r.totalPatients}</td>
-                <td className="px-4 py-3">{r.treatedPatients}</td>
-                <td className="px-4 py-3">{r.averageWaitTime}</td>
-                <td className="px-4 py-3">{r.averageTreatmentTime}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div className="page-container animate-fade-in">
+      <div>
+        <h1 className="page-title">Reports</h1>
+        <p className="page-subtitle">Daily treatment statistics and analytics</p>
+      </div>
+
+      <div className="card overflow-hidden">
+        <div className="grid grid-cols-5 px-4 py-3 bg-slate-800 text-xs font-medium text-slate-400 uppercase tracking-wider">
+          <span>Date</span>
+          <span>Total Patients</span>
+          <span>Treated</span>
+          <span>Avg Wait</span>
+          <span>Avg Treatment</span>
+        </div>
+        <div className="divide-y divide-slate-800">
+          {reports.length === 0 && (
+            <div className="text-center py-16">
+              <p className="text-slate-500 text-lg font-medium">No reports yet</p>
+              <p className="text-slate-600 text-sm mt-1">Reports are generated daily</p>
+            </div>
+          )}
+          {reports.map(r => (
+            <div key={r._id} className="grid grid-cols-5 px-4 py-4 hover:bg-slate-800/50 transition-colors text-sm">
+              <span className="text-white font-medium">{new Date(r.date).toLocaleDateString()}</span>
+              <span className="text-slate-300">{r.totalPatients}</span>
+              <span className="text-emerald-400">{r.treatedPatients}</span>
+              <span className="text-slate-300">{r.averageWaitTime} min</span>
+              <span className="text-slate-300">{r.averageTreatmentTime} min</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

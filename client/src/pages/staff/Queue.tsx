@@ -5,45 +5,53 @@ import PatientCard from '../../components/PatientCard';
 const Queue = () => {
   const { queue, loading } = usePatients();
   const waiting = queue.filter(p => p.status === 'waiting');
+  const inTreatment = queue.filter(p => p.status === 'in-treatment');
 
   const handleCallNext = async () => {
     if (waiting.length === 0) return;
-    const next = waiting[0];
-    await updatePatientStatus(next._id, 'in-treatment', 'Called for treatment');
+    await updatePatientStatus(waiting[0]._id, 'in-treatment', 'Called for treatment');
   };
 
   if (loading) return (
     <div className="flex items-center justify-center h-64">
-      <p className="text-gray-400">Loading...</p>
+      <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-8 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="page-container">
+      <div className="flex items-center justify-between animate-fade-in">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Patient Queue</h1>
-          <p className="text-gray-500 text-sm mt-1">{waiting.length} patients waiting</p>
+          <h1 className="page-title">Patient Queue</h1>
+          <p className="page-subtitle">{waiting.length} patients waiting · {inTreatment.length} in treatment</p>
         </div>
-        <button
-          onClick={handleCallNext}
-          disabled={waiting.length === 0}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-medium disabled:opacity-40 transition-colors"
-        >
+        <button onClick={handleCallNext} disabled={waiting.length === 0} className="btn-primary disabled:opacity-40">
           Call Next Patient
         </button>
       </div>
 
-      <div className="space-y-2">
-        {waiting.map((patient, i) => (
-          <PatientCard key={patient._id} patient={patient} rank={i + 1} />
-        ))}
-        {waiting.length === 0 && (
-          <div className="text-center py-16 text-gray-400">
-            <p className="text-lg">Queue is empty</p>
-            <p className="text-sm mt-1">All patients have been seen</p>
+      {inTreatment.length > 0 && (
+        <div className="animate-fade-in">
+          <h2 className="section-title text-emerald-400">Currently In Treatment</h2>
+          <div className="space-y-2">
+            {inTreatment.map((p, i) => <PatientCard key={p._id} patient={p} rank={i + 1} />)}
           </div>
-        )}
+        </div>
+      )}
+
+      <div className="animate-fade-in">
+        <h2 className="section-title">Waiting Queue</h2>
+        <div className="space-y-2">
+          {waiting.map((patient, i) => (
+            <PatientCard key={patient._id} patient={patient} rank={i + 1} />
+          ))}
+          {waiting.length === 0 && (
+            <div className="card p-16 text-center">
+              <p className="text-slate-400 text-2xl font-bold mb-2">All clear</p>
+              <p className="text-slate-600 text-sm">No patients currently waiting</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

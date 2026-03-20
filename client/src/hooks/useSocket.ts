@@ -12,7 +12,7 @@ export const useSocket = (events: SocketEvents) => {
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
-    socketRef.current = io('http://localhost:5000');
+    socketRef.current = io('http://localhost:5001');
 
     if (events.onQueueUpdate)
       socketRef.current.on('queue_updated', events.onQueueUpdate);
