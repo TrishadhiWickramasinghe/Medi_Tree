@@ -14,33 +14,43 @@ const AlertConfig = () => {
     setTimeout(() => setSaved(false), 2000);
   };
 
-  const labels: Record<string, string> = {
-    severity5: 'Severity 5 — Critical (minutes)',
-    severity4: 'Severity 4 — Severe (minutes)',
-    severity3: 'Severity 3 — Moderate (minutes)',
-    severity2: 'Severity 2 — Minor (minutes)',
-    severity1: 'Severity 1 — Low (minutes)',
-  };
+  const severityConfig = [
+    { key: 'severity5', label: 'Severity 5', desc: 'Critical', color: 'text-red-400', bg: 'bg-red-500/10 border-red-500/20' },
+    { key: 'severity4', label: 'Severity 4', desc: 'Severe', color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/20' },
+    { key: 'severity3', label: 'Severity 3', desc: 'Moderate', color: 'text-yellow-400', bg: 'bg-yellow-500/10 border-yellow-500/20' },
+    { key: 'severity2', label: 'Severity 2', desc: 'Minor', color: 'text-blue-400', bg: 'bg-blue-500/10 border-blue-500/20' },
+    { key: 'severity1', label: 'Severity 1', desc: 'Low', color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' },
+  ];
 
   return (
-    <div className="max-w-2xl mx-auto px-6 py-8 space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Alert Configuration</h1>
-      <p className="text-gray-500 text-sm">Set the maximum wait time per severity level before a critical alert is triggered.</p>
-      <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
-        {Object.entries(thresholds).map(([key, value]) => (
-          <div key={key} className="flex items-center justify-between gap-4">
-            <label className="text-sm font-medium text-gray-700 flex-1">{labels[key]}</label>
-            <input
-              type="number" value={value} min={1}
-              onChange={e => setThresholds({...thresholds, [key]: Number(e.target.value)})}
-              className="w-24 border border-gray-300 rounded-lg px-3 py-2 text-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+    <div className="max-w-2xl mx-auto px-6 py-8 space-y-6 animate-fade-in">
+      <div>
+        <h1 className="page-title">Alert Configuration</h1>
+        <p className="page-subtitle">Set maximum wait times before a critical alert fires</p>
+      </div>
+
+      <div className="card p-6 space-y-3">
+        {severityConfig.map(({ key, label, desc, color, bg }) => (
+          <div key={key} className={`flex items-center justify-between p-4 rounded-xl border ${bg}`}>
+            <div>
+              <p className={`font-semibold text-sm ${color}`}>{label} — {desc}</p>
+              <p className="text-slate-500 text-xs mt-0.5">Maximum wait time before alert triggers</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="number" value={thresholds[key as keyof Thresholds]} min={1}
+                onChange={e => setThresholds({...thresholds, [key]: Number(e.target.value)})}
+                className="w-20 bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <span className="text-slate-500 text-sm">min</span>
+            </div>
           </div>
         ))}
-        <button
-          onClick={handleSave}
-          className={`w-full py-2 rounded-lg text-sm font-medium transition-colors ${saved ? 'bg-green-600 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
-        >
+
+        <button onClick={handleSave}
+          className={`w-full py-3 rounded-xl font-semibold text-sm transition-all duration-300 mt-2 ${
+            saved ? 'bg-emerald-600 text-white' : 'btn-primary'
+          }`}>
           {saved ? 'Saved!' : 'Save Thresholds'}
         </button>
       </div>

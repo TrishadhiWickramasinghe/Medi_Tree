@@ -1,80 +1,65 @@
 import type { TreeNode } from '../types';
 
-interface Props {
-  tree: TreeNode | null;
-}
+interface Props { tree: TreeNode | null; }
 
 const NodeBox = ({ node, x, y, level }: { node: TreeNode; x: number; y: number; level: number }) => {
-  const boxW = 120;
-  const boxH = 50;
-  const gapY = 80;
-  const gapX = Math.max(200 / (level + 1), 60);
+  const boxW = 130;
+  const boxH = 56;
+  const gapY = 90;
+  const gapX = Math.max(180 / (level + 1), 70);
 
-  const getSeverityColor = (bf: number) => {
-    if (bf > 1 || bf < -1) return '#fee2e2';
-    if (bf === 0) return '#dcfce7';
-    return '#dbeafe';
+  const getBF = (bf: number) => {
+    if (bf > 1 || bf < -1) return { fill: '#7f1d1d', stroke: '#ef4444', text: '#fca5a5' };
+    if (bf === 0) return { fill: '#052e16', stroke: '#22c55e', text: '#86efac' };
+    return { fill: '#172554', stroke: '#3b82f6', text: '#93c5fd' };
   };
+
+  const colors = getBF(node.balanceFactor);
 
   return (
     <g>
       {node.left && (
         <>
-          <line
-            x1={x} y1={y + boxH}
-            x2={x - gapX} y2={y + boxH + gapY - boxH}
-            stroke="#94a3b8" strokeWidth="1.5"
-          />
+          <line x1={x} y1={y + boxH} x2={x - gapX} y2={y + boxH + gapY - boxH} stroke="#334155" strokeWidth="1.5" strokeDasharray="4 2" />
           <NodeBox node={node.left} x={x - gapX} y={y + gapY} level={level + 1} />
         </>
       )}
       {node.right && (
         <>
-          <line
-            x1={x} y1={y + boxH}
-            x2={x + gapX} y2={y + boxH + gapY - boxH}
-            stroke="#94a3b8" strokeWidth="1.5"
-          />
+          <line x1={x} y1={y + boxH} x2={x + gapX} y2={y + boxH + gapY - boxH} stroke="#334155" strokeWidth="1.5" strokeDasharray="4 2" />
           <NodeBox node={node.right} x={x + gapX} y={y + gapY} level={level + 1} />
         </>
       )}
-      <rect
-        x={x - boxW / 2} y={y}
-        width={boxW} height={boxH}
-        rx="8"
-        fill={getSeverityColor(node.balanceFactor)}
-        stroke="#cbd5e1" strokeWidth="1"
-      />
-      <text x={x} y={y + 18} textAnchor="middle" fontSize="11" fontWeight="600" fill="#1e293b">
+      <rect x={x - boxW / 2} y={y} width={boxW} height={boxH} rx="10" fill={colors.fill} stroke={colors.stroke} strokeWidth="1.5" />
+      <text x={x} y={y + 16} textAnchor="middle" fontSize="11" fontWeight="700" fill="white">
         {node.patientName.split(' ')[0]}
       </text>
-      <text x={x} y={y + 32} textAnchor="middle" fontSize="10" fill="#475569">
-        Score: {node.priority}
+      <text x={x} y={y + 30} textAnchor="middle" fontSize="10" fill="#94a3b8">
+        Score: <tspan fill={colors.text} fontWeight="600">{node.priority}</tspan>
       </text>
-      <text x={x} y={y + 44} textAnchor="middle" fontSize="9" fill="#94a3b8">
-        BF: {node.balanceFactor} | H: {node.height}
+      <text x={x} y={y + 44} textAnchor="middle" fontSize="9" fill="#64748b">
+        BF: {node.balanceFactor}  |  H: {node.height}
       </text>
     </g>
   );
 };
 
 const AVLTreeVisualizer = ({ tree }: Props) => {
-  if (!tree) {
-    return (
-      <div className="flex items-center justify-center h-48 bg-gray-50 rounded-xl border border-dashed border-gray-300">
-        <p className="text-gray-400 text-sm">No patients in queue — AVL Tree is empty</p>
-      </div>
-    );
-  }
+  if (!tree) return (
+    <div className="flex flex-col items-center justify-center h-48 bg-slate-900 rounded-2xl border border-dashed border-slate-700">
+      <div className="text-slate-600 text-4xl mb-2">⊘</div>
+      <p className="text-slate-500 text-sm">AVL Tree is empty — no patients in queue</p>
+    </div>
+  );
 
   return (
-    <div className="overflow-auto bg-gray-50 rounded-xl border border-gray-200 p-4">
-      <div className="flex gap-4 text-xs text-gray-500 mb-3">
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-green-100 inline-block"></span> Balanced (BF=0)</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-blue-100 inline-block"></span> Slight lean (BF=±1)</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-red-100 inline-block"></span> Needs rotation</span>
+    <div className="bg-slate-900 rounded-2xl border border-slate-800 p-4 overflow-auto">
+      <div className="flex gap-5 text-xs text-slate-500 mb-4 px-2">
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-emerald-900 border border-emerald-500 inline-block" /> Balanced (BF=0)</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-blue-950 border border-blue-500 inline-block" /> Slight lean (BF=±1)</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-red-950 border border-red-500 inline-block" /> Needs rotation</span>
       </div>
-      <svg width="100%" height="400" viewBox="0 0 800 400">
+      <svg width="100%" height="420" viewBox="0 0 800 420">
         <NodeBox node={tree} x={400} y={20} level={0} />
       </svg>
     </div>

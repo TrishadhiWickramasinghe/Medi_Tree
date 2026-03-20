@@ -7,30 +7,41 @@ const AuditLog = () => {
 
   useEffect(() => { getAuditLogs().then(setLogs); }, []);
 
+  const actionColor = (action: string) => {
+    if (action.includes('CREATED')) return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+    if (action.includes('DEACTIVATED')) return 'bg-red-500/20 text-red-400 border-red-500/30';
+    if (action.includes('LOGIN')) return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+    if (action.includes('UPDATED')) return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+    return 'bg-slate-700 text-slate-400 border-slate-600';
+  };
+
   return (
-    <div className="max-w-5xl mx-auto px-6 py-8 space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Audit Log</h1>
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b border-gray-200">
-            <tr>
-              <th className="text-left px-4 py-3 text-gray-600 font-medium">Action</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-medium">Performed By</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-medium">Details</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-medium">Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {logs.map(log => (
-              <tr key={log._id} className="border-b border-gray-100 hover:bg-gray-50">
-                <td className="px-4 py-3 font-medium text-gray-800">{log.action}</td>
-                <td className="px-4 py-3 text-gray-600">{log.performedBy?.name}</td>
-                <td className="px-4 py-3 text-gray-500">{log.details}</td>
-                <td className="px-4 py-3 text-gray-400 text-xs">{new Date(log.createdAt).toLocaleString()}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div className="page-container animate-fade-in">
+      <div>
+        <h1 className="page-title">Audit Log</h1>
+        <p className="page-subtitle">Complete history of all system actions</p>
+      </div>
+
+      <div className="card overflow-hidden">
+        <div className="grid grid-cols-4 px-4 py-3 bg-slate-800 text-xs font-medium text-slate-400 uppercase tracking-wider">
+          <span>Action</span>
+          <span>Performed By</span>
+          <span>Details</span>
+          <span>Time</span>
+        </div>
+        <div className="divide-y divide-slate-800">
+          {logs.map(log => (
+            <div key={log._id} className="grid grid-cols-4 px-4 py-3 hover:bg-slate-800/50 transition-colors animate-slide-in items-center">
+              <span className={`badge border w-fit ${actionColor(log.action)}`}>{log.action}</span>
+              <span className="text-slate-300 text-sm">{log.performedBy?.name}</span>
+              <span className="text-slate-500 text-sm truncate pr-4">{log.details}</span>
+              <span className="text-slate-600 text-xs">{new Date(log.createdAt).toLocaleString()}</span>
+            </div>
+          ))}
+          {logs.length === 0 && (
+            <div className="text-center py-12 text-slate-500">No audit logs yet</div>
+          )}
+        </div>
       </div>
     </div>
   );
